@@ -160,5 +160,34 @@ if(window.self!==window.top){
                 },
             });
         </script>
-    <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d972b211fb9b145',t:'MTc3MzAyODc4Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+    <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d972b211fb9b145',t:'MTc3MzAyODc4Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+
+    <!-- Background music control -->
+    <div id="music-control" style="position: fixed; bottom: 16px; left: 16px; z-index:9999;">
+      <button id="music-toggle" style="padding: 8px 12px; font-size: 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.3); background: rgba(0,0,0,0.6); color: white; cursor: pointer;">🔈 Play music</button>
+    </div>
+    <audio id="bg-music" loop preload="auto" src="https://assets.mixkit.co/music/preview/mixkit-happy-upbeat-guitar-1117.mp3"></audio>
+    <script>
+      const audio = document.getElementById('bg-music');
+      const btn = document.getElementById('music-toggle');
+      btn.addEventListener('click', () => {
+        if (audio.paused) {
+          audio.play();
+          btn.textContent = '🔊 Pause music';
+        } else {
+          audio.pause();
+          btn.textContent = '🔈 Play music';
+        }
+      });
+
+      // Try to autoplay muted (browsers often block autoplay with sound)
+      audio.muted = true;
+      audio.play().then(() => {
+        audio.muted = false;
+        btn.textContent = '🔊 Pause music';
+      }).catch(() => {
+        btn.textContent = '🔈 Play music';
+      });
+    </script>
+</body>           </html>
 </html>
