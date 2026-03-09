@@ -214,6 +214,124 @@ if(window.self!==window.top){
         darkMode = !darkMode;
         setTheme(darkMode);
       });
+
+      // Game stats overlay (moves, pairs, timer)
+      const statsEl = document.createElement('div');
+      statsEl.id = 'game-stats';
+      statsEl.style = 'position: fixed; top: 16px; left: 16px; z-index: 9999; padding: 10px 14px; border-radius: 14px; background: rgba(0,0,0,0.55); color: white; font-family: system-ui, sans-serif; font-size: 14px; line-height: 1.3; min-width: 180px;';
+      statsEl.innerHTML = `
+        <div style="font-weight: 600; margin-bottom: 6px;">Game Stats</div>
+        <div>Moves: <span id="stat-moves">0</span></div>
+        <div>Pairs: <span id="stat-pairs">0</span></div>
+        <div>Time: <span id="stat-time">00:00</span></div>
+        <button id="instructions-btn" style="margin-top:8px;width:100%;padding:6px 8px;border:none;border-radius:10px;background:rgba(255,255,255,0.18);color:#fff;cursor:pointer;font-size:13px;">📘 How to play</button>
+      `;
+      document.body.appendChild(statsEl);
+
+      const statMoves = document.getElementById('stat-moves');
+      const statPairs = document.getElementById('stat-pairs');
+      const statTime = document.getElementById('stat-time');
+
+      let moves = 0;
+      let matched = 0;
+      let timerInterval = null;
+      let startTime = null;
+      const matchedSet = new WeakSet();
+
+      const formatTime = (seconds) => {
+        const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+        const s = String(Math.floor(seconds % 60)).padStart(2, '0');
+        return `${m}:${s}`;
+      };
+
+      const startTimer = () => {
+        if (timerInterval) return;
+        startTime = Date.now();
+        timerInterval = setInterval(() => {
+          const secs = (Date.now() - startTime) / 1000;
+          statTime.textContent = formatTime(secs);
+        }, 500);
+      };
+
+      const stopTimer = () => {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      };
+
+      const resetStats = () => {
+        moves = 0;
+        matched = 0;
+        startTime = null;
+        stopTimer();
+        statMoves.textContent = '0';
+        statPairs.textContent = '0';
+        statTime.textContent = '00:00';
+        matchedSet.clear?.();
+      };
+
+      const observeGame = () => {
+        const board = document.querySelector('.game-board');
+        if (!board) return;
+
+        const observer = new MutationObserver((mutations) => {
+          for (const m of mutations) {
+            const target = m.target;
+            if (!(target instanceof HTMLElement)) continue;
+
+            if (m.attributeName === 'class') {
+              const cls = target.classList;
+              if (cls.contains('flipped')) {
+                startTimer();
+                if (!m.oldValue || !m.oldValue.includes('flipped')) {
+                  moves++;
+                  statMoves.textContent = moves;
+                }
+              }
+
+              if (cls.contains('matched') && !matchedSet.has(target)) {
+                matchedSet.add(target);
+                matched++;
+                statPairs.textContent = Math.floor(matched / 2);
+              }
+            }
+          }
+        });
+
+        observer.observe(board, { subtree: true, attributes: true, attributeFilter: ['class'], attributeOldValue: true });
+      };
+
+      const initGameEnhancements = () => {
+        const board = document.querySelector('.game-board');
+        if (!board) {
+          requestAnimationFrame(initGameEnhancements);
+          return;
+        }
+        resetStats();
+        observeGame();
+      };
+      initGameEnhancements();
+
+      // Instructions modal
+      const modal = document.createElement('div');
+      modal.id = 'instructions-modal';
+      modal.style = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.75);display:none;align-items:center;justify-content:center;z-index:99999;';
+      modal.innerHTML = `
+        <div style="max-width:420px;width:100%;background:rgba(10,10,15,0.95);border-radius:18px;padding:22px;color:#fff;font-family:system-ui,sans-serif;box-shadow:0 16px 40px rgba(0,0,0,0.5);">
+          <h2 style="margin:0 0 10px;font-size:20px;text-align:center;">How to play</h2>
+          <ol style="padding-left:18px;line-height:1.5;font-size:14px;">
+            <li>Click a card to flip it.</li>
+            <li>Find its matching pair.</li>
+            <li>Try to match all 18 pairs (36 cards).</li>
+            <li>Use Restart to shuffle and reset.</li>
+          </ol>
+          <div style="margin-top:16px;text-align:center;">
+            <button id="close-instructions" style="padding:10px 14px;border:none;border-radius:14px;background:#3b82f6;color:#fff;cursor:pointer;font-size:14px;">Close</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+      document.getElementById('instructions-btn').addEventListener('click', () => { modal.style.display = 'flex'; });
+      document.getElementById('close-instructions').addEventListener('click', () => { modal.style.display = 'none'; });
     </script>
 </body>
 </html>
