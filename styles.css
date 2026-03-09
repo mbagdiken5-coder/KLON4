@@ -145,11 +145,21 @@ body.theme-dark {
 
 .board {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(84px, 1fr));
   gap: 12px;
-  max-width: 860px;
+  max-width: 940px;
   margin: 0 auto 40px;
   padding: 0 16px;
+}
+
+@media (min-width: 1100px) {
+  .board {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+.board {
+  perspective: 1400px;
 }
 
 .card {
@@ -169,6 +179,10 @@ body.theme-dark {
   transform: rotateY(180deg);
 }
 
+.card {
+  will-change: transform;
+}
+
 .card__face {
   position: absolute;
   inset: 0;
@@ -177,15 +191,52 @@ body.theme-dark {
   justify-content: center;
   border-radius: 20px;
   backface-visibility: hidden;
+  overflow: hidden;
 }
 
 .card__front {
   background: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
 }
 
 .card__back {
   background: rgba(255, 255, 255, 0.18);
   transform: rotateY(180deg);
+  box-shadow: 0 12px 18px rgba(0, 0, 0, 0.35);
+}
+
+.card__emoji {
+  font-size: 34px;
+  text-shadow: 0 0 12px rgba(0, 0, 0, 0.35);
+}
+
+.card:hover {
+  transform: translateY(-3px);
+}
+
+.card.matched {
+  animation: pulse 0.9s ease-in-out infinite;
+}
+
+.card.shake {
+  animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: rotateY(180deg) scale(1);
+  }
+  50% {
+    transform: rotateY(180deg) scale(1.05);
+  }
 }
 
 .card__emoji {
@@ -203,6 +254,35 @@ body.theme-dark {
   pointer-events: none;
   transition: opacity 0.2s ease;
   z-index: 20;
+}
+
+.snow {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 15;
+}
+
+.snow span {
+  position: absolute;
+  top: -20px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.84);
+  filter: blur(1px);
+  animation: drift 8s linear infinite;
+}
+
+@keyframes drift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.7);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate3d(30vw, 120vh, 0) scale(0.4);
+    opacity: 0;
+  }
 }
 
 .overlay.visible {
