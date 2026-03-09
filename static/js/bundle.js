@@ -23822,7 +23822,7 @@ function App() {
               "x-component": "div",
               "x-id": "App_135_16",
               "x-dynamic": "false",
-              children: "\u2764\uFE0F"
+              children: ""
             }, void 0, false, {
               fileName: _jsxFileName,
               lineNumber: 135,
