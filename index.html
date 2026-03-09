@@ -24,6 +24,19 @@
         <title>Emergent | Fullstack App</title>
         <script>window.addEventListener("error",function(e){if(e.error instanceof DOMException&&e.error.name==="DataCloneError"&&e.message&&e.message.includes("PerformanceServerTiming")){e.stopImmediatePropagation();e.preventDefault()}},true);</script>
         <script src="https://assets.emergent.sh/scripts/emergent-main.js"></script>
+        <style>
+          body {
+            margin: 0;
+            min-height: 100vh;
+            transition: background 0.3s ease;
+          }
+          body.theme-light {
+            background: linear-gradient(135deg, #1e3a8a, #0f172a) !important;
+          }
+          body.theme-dark {
+            background: linear-gradient(135deg, #050817, #0b0f1b) !important;
+          }
+        </style>
     <script defer src="static/js/bundle.js"></script><script>
 if(window.self!==window.top){
   var s=document.createElement("script");s.src="/visual-edit-overlay.js";document.head.appendChild(s);
@@ -203,12 +216,13 @@ if(window.self!==window.top){
 
       // Theme toggle: light/dark background
       const themeToggle = document.getElementById('theme-toggle');
-      const root = document.documentElement;
+      const body = document.body;
       const setTheme = (dark) => {
-        root.style.background = dark ? 'linear-gradient(135deg, #050817, #0b0f1b)' : 'linear-gradient(135deg, #1e3a8a, #0f172a)';
+        body.classList.toggle('theme-dark', dark);
+        body.classList.toggle('theme-light', !dark);
         themeToggle.textContent = dark ? '☀️ Light' : '🌙 Dark';
       };
-      let darkMode = true;
+      let darkMode = false;
       setTheme(darkMode);
       themeToggle.addEventListener('click', () => {
         darkMode = !darkMode;
