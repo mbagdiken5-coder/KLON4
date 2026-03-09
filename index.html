@@ -58,8 +58,9 @@
           }
 
           body.theme-love {
+            --love-bg: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80');
             background: linear-gradient(135deg, #ff5d8f 0%, #ff4f7a 30%, #b13a6f 65%, #431332 100%);
-            background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80');
+            background-image: var(--love-bg);
             background-size: cover;
             background-position: center;
             background-blend-mode: overlay;
@@ -443,13 +444,27 @@ if(window.self!==window.top){
 
         const body = document.body;
         const themes = ['light', 'dark', 'love'];
+        const loveBackgrounds = [
+          'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1600&q=80',
+          'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1600&q=80',
+          'https://images.unsplash.com/photo-1524503033411-c9566986fc8f?auto=format&fit=crop&w=1600&q=80',
+          'https://images.unsplash.com/photo-1493770348161-369560ae357d?auto=format&fit=crop&w=1600&q=80',
+          'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=1600&q=80',
+        ];
         let themeIndex = 0;
 
         const setTheme = (index) => {
           themeIndex = index % themes.length;
           const active = themes[themeIndex];
+
           body.classList.remove('theme-light', 'theme-dark', 'theme-love');
           body.classList.add(`theme-${active}`);
+
+          if (active === 'love') {
+            const nextBg = loveBackgrounds[Math.floor(Math.random() * loveBackgrounds.length)];
+            body.style.setProperty('--love-bg', `url('${nextBg}')`);
+          }
+
           const themeToggle = document.getElementById('theme-toggle');
           const themeLabel = active === 'love' ? '💖 Aşk' : active === 'dark' ? '☀️ Light' : '🌙 Dark';
           themeToggle.textContent = themeLabel;
