@@ -36,6 +36,20 @@
           body.theme-dark {
             background: linear-gradient(135deg, #050817, #0b0f1b) !important;
           }
+          body.theme-love {
+            background: radial-gradient(circle at top, rgba(255, 112, 179, 0.9), rgba(123, 12, 108, 0.95) 60%);
+            background-attachment: fixed !important;
+          }
+          body.theme-love::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.25) 0%, transparent 55%),
+                              radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.2) 0%, transparent 50%),
+                              radial-gradient(circle at 30% 80%, rgba(255, 255, 255, 0.18) 0%, transparent 60%);
+            opacity: 0.7;
+          }
         </style>
     <script defer src="static/js/bundle.js"></script><script>
 if(window.self!==window.top){
@@ -214,19 +228,21 @@ if(window.self!==window.top){
         location.reload();
       });
 
-      // Theme toggle: light/dark background
+      // Theme toggle: cycle through Light / Dark / Aşk themes
       const themeToggle = document.getElementById('theme-toggle');
       const body = document.body;
-      const setTheme = (dark) => {
-        body.classList.toggle('theme-dark', dark);
-        body.classList.toggle('theme-light', !dark);
-        themeToggle.textContent = dark ? '☀️ Light' : '🌙 Dark';
+      const themes = ['light', 'dark', 'love'];
+      let themeIndex = 0;
+      const setTheme = (index) => {
+        body.classList.remove('theme-light', 'theme-dark', 'theme-love');
+        const active = themes[index % themes.length];
+        body.classList.add(`theme-${active}`);
+        themeToggle.textContent = active === 'love' ? '💖 Aşk' : active === 'dark' ? '☀️ Light' : '🌙 Dark';
       };
-      let darkMode = false;
-      setTheme(darkMode);
+      setTheme(themeIndex);
       themeToggle.addEventListener('click', () => {
-        darkMode = !darkMode;
-        setTheme(darkMode);
+        themeIndex = (themeIndex + 1) % themes.length;
+        setTheme(themeIndex);
       });
 
       // Game stats overlay (moves, pairs, timer)
@@ -246,11 +262,15 @@ if(window.self!==window.top){
       const statPairs = document.getElementById('stat-pairs');
       const statTime = document.getElementById('stat-time');
 
+      const flipAudio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-quick-jump-arcade-game-239.wav');
+      const winAudio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-game-level-completed-2059.wav');
+
       let moves = 0;
       let matched = 0;
       let timerInterval = null;
       let startTime = null;
       const matchedSet = new WeakSet();
+      let winShown = false;
 
       const formatTime = (seconds) => {
         const m = String(Math.floor(seconds / 60)).padStart(2, '0');
@@ -294,11 +314,16 @@ if(window.self!==window.top){
 
             if (m.attributeName === 'class') {
               const cls = target.classList;
+
               if (cls.contains('flipped')) {
                 startTimer();
                 if (!m.oldValue || !m.oldValue.includes('flipped')) {
                   moves++;
                   statMoves.textContent = moves;
+
+                  // Play flip sound on card open
+                  flipAudio.currentTime = 0;
+                  flipAudio.play().catch(() => {});
                 }
               }
 
@@ -306,6 +331,12 @@ if(window.self!==window.top){
                 matchedSet.add(target);
                 matched++;
                 statPairs.textContent = Math.floor(matched / 2);
+
+                if (!winShown && Math.floor(matched / 2) >= 18) {
+                  winShown = true;
+                  winAudio.play().catch(() => {});
+                  showLoveMessage();
+                }
               }
             }
           }
@@ -325,27 +356,23 @@ if(window.self!==window.top){
       };
       initGameEnhancements();
 
-      // Instructions modal
-      const modal = document.createElement('div');
-      modal.id = 'instructions-modal';
-      modal.style = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.75);display:none;align-items:center;justify-content:center;z-index:99999;';
-      modal.innerHTML = `
-        <div style="max-width:420px;width:100%;background:rgba(10,10,15,0.95);border-radius:18px;padding:22px;color:#fff;font-family:system-ui,sans-serif;box-shadow:0 16px 40px rgba(0,0,0,0.5);">
-          <h2 style="margin:0 0 10px;font-size:20px;text-align:center;">How to play</h2>
-          <ol style="padding-left:18px;line-height:1.5;font-size:14px;">
-            <li>Click a card to flip it.</li>
-            <li>Find its matching pair.</li>
-            <li>Try to match all 18 pairs (36 cards).</li>
-            <li>Use Restart to shuffle and reset.</li>
-          </ol>
-          <div style="margin-top:16px;text-align:center;">
-            <button id="close-instructions" style="padding:10px 14px;border:none;border-radius:14px;background:#3b82f6;color:#fff;cursor:pointer;font-size:14px;">Close</button>
-          </div>
+      // Love message overlay (shown on win)
+      const loveOverlay = document.createElement('div');
+      loveOverlay.id = 'love-overlay';
+      loveOverlay.style = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;z-index:100000;';
+      loveOverlay.innerHTML = `
+        <div style="max-width:520px;width:100%;background:rgba(255,255,255,0.08);border-radius:22px;padding:28px;color:#fff;font-family:system-ui,sans-serif;box-shadow:0 18px 50px rgba(0,0,0,0.7);text-align:center;">
+          <h1 style="margin:0 0 12px;font-size:26px;letter-spacing:0.5px;">🎉 Tebrikler!</h1>
+          <p style="font-size:18px;line-height:1.5;margin:0 0 16px;">Seni çok seviyorum ömrümmmmmmmm 💖</p>
+          <button id="close-love" style="padding:12px 18px;border:none;border-radius:16px;background:rgba(255,255,255,0.18);color:#fff;cursor:pointer;font-size:15px;">Tamam</button>
         </div>
       `;
-      document.body.appendChild(modal);
-      document.getElementById('instructions-btn').addEventListener('click', () => { modal.style.display = 'flex'; });
-      document.getElementById('close-instructions').addEventListener('click', () => { modal.style.display = 'none'; });
+      document.body.appendChild(loveOverlay);
+      document.getElementById('close-love').addEventListener('click', () => { loveOverlay.style.display = 'none'; });
+
+      const showLoveMessage = () => {
+        loveOverlay.style.display = 'flex';
+      };
     </script>
 </body>
 </html>
