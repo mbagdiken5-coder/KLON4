@@ -166,6 +166,12 @@ if(window.self!==window.top){
     <div id="music-control" style="position: fixed; bottom: 16px; left: 16px; z-index:9999;">
       <button id="music-toggle" style="padding: 8px 12px; font-size: 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.3); background: rgba(0,0,0,0.6); color: white; cursor: pointer;">🔈 Play music</button>
     </div>
+
+    <!-- Quick game controls -->
+    <div id="game-toolbar" style="position: fixed; top: 16px; right: 16px; z-index: 9999; display: flex; gap: 8px;">
+      <button id="restart-btn" style="padding: 8px 12px; font-size: 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.3); background: rgba(0,0,0,0.6); color: white; cursor: pointer;">🔄 Restart</button>
+      <button id="theme-toggle" style="padding: 8px 12px; font-size: 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.3); background: rgba(0,0,0,0.6); color: white; cursor: pointer;">🌙 Theme</button>
+    </div>
     <!-- Default background music: free Mixkit preview (works immediately). Replace with your own file (e.g., "ey-ask.mp3") if you want. -->
     <audio id="bg-music" loop preload="auto" src="https://assets.mixkit.co/music/preview/mixkit-happy-upbeat-guitar-1117.mp3"></audio>
     <script>
@@ -188,6 +194,25 @@ if(window.self!==window.top){
         btn.textContent = '🔊 Pause music';
       }).catch(() => {
         btn.textContent = '🔈 Play music';
+      });
+
+      // Restart button (quick reload)
+      document.getElementById('restart-btn').addEventListener('click', () => {
+        location.reload();
+      });
+
+      // Theme toggle: light/dark background
+      const themeToggle = document.getElementById('theme-toggle');
+      const root = document.documentElement;
+      const setTheme = (dark) => {
+        root.style.background = dark ? 'linear-gradient(135deg, #050817, #0b0f1b)' : 'linear-gradient(135deg, #1e3a8a, #0f172a)';
+        themeToggle.textContent = dark ? '☀️ Light' : '🌙 Dark';
+      };
+      let darkMode = true;
+      setTheme(darkMode);
+      themeToggle.addEventListener('click', () => {
+        darkMode = !darkMode;
+        setTheme(darkMode);
       });
     </script>
 </body>
