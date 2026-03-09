@@ -166,8 +166,8 @@ if(window.self!==window.top){
     <div id="music-control" style="position: fixed; bottom: 16px; left: 16px; z-index:9999;">
       <button id="music-toggle" style="padding: 8px 12px; font-size: 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.3); background: rgba(0,0,0,0.6); color: white; cursor: pointer;">🔈 Play music</button>
     </div>
-    <!-- Replace the src below with a legally obtained MP3 (e.g., "ey-ask.mp3" in this repo) -->
-    <audio id="bg-music" loop preload="auto" src="ey-ask.mp3"></audio>
+    <!-- Default background music: free Mixkit preview (works immediately). Replace with your own file (e.g., "ey-ask.mp3") if you want. -->
+    <audio id="bg-music" loop preload="auto" src="https://assets.mixkit.co/music/preview/mixkit-happy-upbeat-guitar-1117.mp3"></audio>
     <script>
       const audio = document.getElementById('bg-music');
       const btn = document.getElementById('music-toggle');
