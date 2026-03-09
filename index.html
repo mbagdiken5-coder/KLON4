@@ -453,6 +453,11 @@ if(window.self!==window.top){
         ];
         let themeIndex = 0;
 
+        const applyLoveBackground = () => {
+          const nextBg = loveBackgrounds[Math.floor(Math.random() * loveBackgrounds.length)];
+          body.style.setProperty('--love-bg', `url('${nextBg}')`);
+        };
+
         const setTheme = (index) => {
           themeIndex = index % themes.length;
           const active = themes[themeIndex];
@@ -461,8 +466,7 @@ if(window.self!==window.top){
           body.classList.add(`theme-${active}`);
 
           if (active === 'love') {
-            const nextBg = loveBackgrounds[Math.floor(Math.random() * loveBackgrounds.length)];
-            body.style.setProperty('--love-bg', `url('${nextBg}')`);
+            applyLoveBackground();
           }
 
           const themeToggle = document.getElementById('theme-toggle');
@@ -681,6 +685,11 @@ if(window.self!==window.top){
         });
 
         document.getElementById('theme-toggle').addEventListener('click', () => {
+          // If currently in Aşk theme, rotate the background image instead of switching themes.
+          if (themes[themeIndex] === 'love') {
+            applyLoveBackground();
+            return;
+          }
           setTheme(themeIndex + 1);
         });
 
