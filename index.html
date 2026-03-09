@@ -452,10 +452,12 @@ if(window.self!==window.top){
           'https://images.unsplash.com/photo-1502772066654-695faa80c432?auto=format&fit=crop&w=1600&q=80',
         ];
         let themeIndex = 0;
+        let loveBgIndex = 0;
 
         const applyLoveBackground = () => {
-          const nextBg = loveBackgrounds[Math.floor(Math.random() * loveBackgrounds.length)];
-          body.style.setProperty('--love-bg', `url('${nextBg}')`);
+          const nextIndex = (loveBgIndex + 1 + Math.floor(Math.random() * (loveBackgrounds.length - 1))) % loveBackgrounds.length;
+          loveBgIndex = nextIndex;
+          body.style.setProperty('--love-bg', `url('${loveBackgrounds[loveBgIndex]}')`);
         };
 
         const setTheme = (index) => {
