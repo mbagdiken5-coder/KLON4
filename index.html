@@ -4,7 +4,7 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#000000" />
-        <meta name="description" content="A product of emergent.sh" />
+        <meta name="description" content="Aşk Hafıza Oyunu: kart eşleştirme, en iyi skoru kaydetme ve hızını test etme." />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap" rel="stylesheet" />
@@ -21,21 +21,42 @@
         work correctly both with client-side routing and a non-root public URL.
         Learn how to configure a non-root public URL by running `npm run build`.
         -->
-        <title>Emergent | Fullstack App</title>
+        <title>Aşk Hafıza Oyunu</title>
         <script>window.addEventListener("error",function(e){if(e.error instanceof DOMException&&e.error.name==="DataCloneError"&&e.message&&e.message.includes("PerformanceServerTiming")){e.stopImmediatePropagation();e.preventDefault()}},true);</script>
         <script src="https://assets.emergent.sh/scripts/emergent-main.js"></script>
         <style>
+          :root {
+            --ui-bg: rgba(10, 12, 20, 0.6);
+            --ui-border: rgba(255, 255, 255, 0.15);
+            --ui-text: rgba(255, 255, 255, 0.95);
+            --ui-muted: rgba(255, 255, 255, 0.72);
+            --accent: #ff78b1;
+            --accent-2: #ffb6d8;
+            --radius: 18px;
+            --shadow: 0 18px 60px rgba(0, 0, 0, 0.55);
+          }
+
+          * {
+            box-sizing: border-box;
+          }
+
           body {
             margin: 0;
             min-height: 100vh;
+            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             transition: background 0.3s ease;
+            color: var(--ui-text);
+            overflow-x: hidden;
           }
+
           body.theme-light {
             background: linear-gradient(135deg, #1e3a8a, #0f172a) !important;
           }
+
           body.theme-dark {
             background: linear-gradient(135deg, #050817, #0b0f1b) !important;
           }
+
           body.theme-love {
             background: linear-gradient(135deg, #ff5d8f 0%, #ff4f7a 30%, #b13a6f 65%, #431332 100%);
             background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80');
@@ -44,6 +65,7 @@
             background-blend-mode: overlay;
             background-attachment: fixed !important;
           }
+
           body.theme-love::before {
             content: "";
             position: fixed;
@@ -54,6 +76,188 @@
                               radial-gradient(circle at 30% 80%, rgba(255, 255, 255, 0.15) 0%, transparent 60%),
                               radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
             opacity: 0.8;
+          }
+
+          .ui-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.85rem 1rem;
+            gap: 0.75rem;
+            background: var(--ui-bg);
+            backdrop-filter: blur(18px);
+            border-bottom: 1px solid var(--ui-border);
+            z-index: 9999;
+          }
+
+          .ui-bar__brand {
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+          }
+
+          .ui-bar__group {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+          }
+
+          .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0.55rem 0.85rem;
+            font-size: 13px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            background: rgba(0, 0, 0, 0.45);
+            color: var(--ui-text);
+            cursor: pointer;
+            transition: transform 0.15s ease, background 0.15s ease;
+            white-space: nowrap;
+          }
+
+          .btn:hover {
+            transform: translateY(-1px);
+            background: rgba(255, 255, 255, 0.12);
+          }
+
+          .btn:active {
+            transform: translateY(0);
+          }
+
+          .stats-card {
+            position: fixed;
+            top: 84px;
+            left: 16px;
+            z-index: 9999;
+            padding: 14px 16px;
+            min-width: 210px;
+            border-radius: var(--radius);
+            background: rgba(0, 0, 0, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: var(--shadow);
+            color: var(--ui-text);
+            font-size: 14px;
+            line-height: 1.3;
+          }
+
+          .stats-card__title {
+            margin: 0 0 8px;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+            opacity: 0.9;
+          }
+
+          .stats-card__row {
+            display: flex;
+            justify-content: space-between;
+            gap: 0.5rem;
+            margin-bottom: 6px;
+          }
+
+          .stats-card__label {
+            color: var(--ui-muted);
+          }
+
+          .stats-card__value {
+            font-weight: 600;
+          }
+
+          .stats-card__footer {
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--ui-muted);
+          }
+
+          .overlay {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2.5rem 1rem;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 100000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+          }
+
+          .overlay.visible {
+            opacity: 1;
+            pointer-events: all;
+          }
+
+          .overlay__panel {
+            width: min(520px, 100%);
+            background: rgba(12, 12, 18, 0.93);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 22px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+          }
+
+          .overlay__title {
+            margin: 0 0 0.75rem;
+            font-size: 26px;
+            letter-spacing: 0.5px;
+          }
+
+          .overlay__subtitle {
+            margin: 0 0 1.5rem;
+            font-size: 16px;
+            color: var(--ui-muted);
+            line-height: 1.5;
+          }
+
+          .overlay__actions {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-top: 1.3rem;
+          }
+
+          .love-badge {
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 999px;
+            padding: 0.35rem 0.65rem;
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+            color: var(--ui-text);
+          }
+
+          @media (max-width: 520px) {
+            .stats-card {
+              top: auto;
+              bottom: 16px;
+              right: 16px;
+              left: auto;
+            }
+
+            .ui-bar {
+              flex-direction: column;
+              align-items: flex-start;
+              gap: 0.5rem;
+              padding: 0.85rem;
+            }
+
+            .ui-bar__group {
+              width: 100%;
+              justify-content: space-between;
+            }
           }
         </style>
     <script defer src="static/js/bundle.js"></script><script>
@@ -194,190 +398,320 @@ if(window.self!==window.top){
         </script>
     <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d972b211fb9b145',t:'MTc3MzAyODc4Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 
-    <!-- Background music control -->
-    <div id="music-control" style="position: fixed; bottom: 16px; left: 16px; z-index:9999;">
-      <button id="music-toggle" style="padding: 8px 12px; font-size: 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.3); background: rgba(0,0,0,0.6); color: white; cursor: pointer;">🔈 Play music</button>
+    <!-- UI bar -->
+    <div class="ui-bar" id="ui-bar">
+      <div class="ui-bar__brand">💘 Aşk Hafıza Oyunu</div>
+      <div class="ui-bar__group">
+        <button id="theme-toggle" class="btn" type="button">🌙 Dark</button>
+        <button id="restart-btn" class="btn" type="button">🔄 Restart</button>
+        <button id="music-toggle" class="btn" type="button">🔈 Play</button>
+      </div>
     </div>
 
-    <!-- Quick game controls -->
-    <div id="game-toolbar" style="position: fixed; top: 16px; right: 16px; z-index: 9999; display: flex; gap: 8px;">
-      <button id="restart-btn" style="padding: 8px 12px; font-size: 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.3); background: rgba(0,0,0,0.6); color: white; cursor: pointer;">🔄 Restart</button>
-      <button id="theme-toggle" style="padding: 8px 12px; font-size: 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.3); background: rgba(0,0,0,0.6); color: white; cursor: pointer;">🌙 Theme</button>
+    <div id="start-overlay" class="overlay visible">
+      <div class="overlay__panel">
+        <h1 class="overlay__title">Hazır mısın?</h1>
+        <p class="overlay__subtitle">Kart eşleştirme oyunu. Ne kadar hızlısın? En iyi skorunu kaydet.</p>
+        <div class="overlay__actions">
+          <button id="start-btn" class="btn" type="button">🎮 Başla</button>
+          <button id="open-instructions" class="btn" type="button">📘 Nasıl oynanır</button>
+        </div>
+        <div style="margin-top: 1.2rem; font-size: 12px; color: var(--ui-muted);">
+          Tema: <span id="current-theme" class="love-badge">Aşk</span>
+        </div>
+      </div>
     </div>
-    <!-- Default background music: free Mixkit preview (works immediately). Replace with your own file (e.g., "ey-ask.mp3") if you want. -->
+
+    <div id="instructions-overlay" class="overlay">
+      <div class="overlay__panel">
+        <h1 class="overlay__title">Oyun Kuralları</h1>
+        <p class="overlay__subtitle">
+          Kartları aç, eşleşenleri bul. Aynı anda iki kart açabilirsin. Hepsini eşleştirdiğinde oyunu kazanırsın.
+          En iyi skorunu zaman ve hamle sayısına göre kaydediyoruz.
+        </p>
+        <div class="overlay__actions">
+          <button id="close-instructions" class="btn" type="button">Tamam</button>
+        </div>
+      </div>
+    </div>
+
     <audio id="bg-music" loop preload="auto" src="https://assets.mixkit.co/music/preview/mixkit-happy-upbeat-guitar-1117.mp3"></audio>
     <script>
-      const audio = document.getElementById('bg-music');
-      const btn = document.getElementById('music-toggle');
-      btn.addEventListener('click', () => {
-        if (audio.paused) {
-          audio.play();
-          btn.textContent = '🔊 Pause music';
-        } else {
-          audio.pause();
-          btn.textContent = '🔈 Play music';
-        }
-      });
+      (function () {
+        const STORAGE_KEY = 'klon4_best_score';
+        const THEME_KEY = 'klon4_theme';
 
-      // Try to autoplay muted (browsers often block autoplay with sound)
-      audio.muted = true;
-      audio.play().then(() => {
-        audio.muted = false;
-        btn.textContent = '🔊 Pause music';
-      }).catch(() => {
-        btn.textContent = '🔈 Play music';
-      });
+        const body = document.body;
+        const themes = ['light', 'dark', 'love'];
+        let themeIndex = 0;
 
-      // Restart button (quick reload)
-      document.getElementById('restart-btn').addEventListener('click', () => {
-        location.reload();
-      });
+        const setTheme = (index) => {
+          themeIndex = index % themes.length;
+          const active = themes[themeIndex];
+          body.classList.remove('theme-light', 'theme-dark', 'theme-love');
+          body.classList.add(`theme-${active}`);
+          const themeToggle = document.getElementById('theme-toggle');
+          const themeLabel = active === 'love' ? '💖 Aşk' : active === 'dark' ? '☀️ Light' : '🌙 Dark';
+          themeToggle.textContent = themeLabel;
+          document.getElementById('current-theme').textContent =
+            active === 'love' ? 'Aşk' : active === 'dark' ? 'Karanlık' : 'Açık';
+          localStorage.setItem(THEME_KEY, active);
+        };
 
-      // Theme toggle: cycle through Light / Dark / Aşk themes
-      const themeToggle = document.getElementById('theme-toggle');
-      const body = document.body;
-      const themes = ['light', 'dark', 'love'];
-      let themeIndex = 0;
-      const setTheme = (index) => {
-        body.classList.remove('theme-light', 'theme-dark', 'theme-love');
-        const active = themes[index % themes.length];
-        body.classList.add(`theme-${active}`);
-        themeToggle.textContent = active === 'love' ? '💖 Aşk' : active === 'dark' ? '☀️ Light' : '🌙 Dark';
-      };
-      setTheme(themeIndex);
-      themeToggle.addEventListener('click', () => {
-        themeIndex = (themeIndex + 1) % themes.length;
-        setTheme(themeIndex);
-      });
+        const loadTheme = () => {
+          const saved = localStorage.getItem(THEME_KEY);
+          const idx = saved ? themes.indexOf(saved) : -1;
+          setTheme(idx >= 0 ? idx : 0);
+        };
 
-      // Game stats overlay (moves, pairs, timer)
-      const statsEl = document.createElement('div');
-      statsEl.id = 'game-stats';
-      statsEl.style = 'position: fixed; top: 16px; left: 16px; z-index: 9999; padding: 10px 14px; border-radius: 14px; background: rgba(0,0,0,0.55); color: white; font-family: system-ui, sans-serif; font-size: 14px; line-height: 1.3; min-width: 180px;';
-      statsEl.innerHTML = `
-        <div style="font-weight: 600; margin-bottom: 6px;">Game Stats</div>
-        <div>Moves: <span id="stat-moves">0</span></div>
-        <div>Pairs: <span id="stat-pairs">0</span></div>
-        <div>Time: <span id="stat-time">00:00</span></div>
-        <button id="instructions-btn" style="margin-top:8px;width:100%;padding:6px 8px;border:none;border-radius:10px;background:rgba(255,255,255,0.18);color:#fff;cursor:pointer;font-size:13px;">📘 How to play</button>
-      `;
-      document.body.appendChild(statsEl);
+        const formatTime = (seconds) => {
+          const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+          const s = String(Math.floor(seconds % 60)).padStart(2, '0');
+          return `${m}:${s}`;
+        };
 
-      const statMoves = document.getElementById('stat-moves');
-      const statPairs = document.getElementById('stat-pairs');
-      const statTime = document.getElementById('stat-time');
+        const getStoredBest = () => {
+          try {
+            return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+          } catch (e) {
+            return {};
+          }
+        };
 
-      const flipAudio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-quick-jump-arcade-game-239.wav');
-      const winAudio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-game-level-completed-2059.wav');
+        const setStoredBest = (best) => {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(best));
+        };
 
-      let moves = 0;
-      let matched = 0;
-      let timerInterval = null;
-      let startTime = null;
-      const matchedSet = new WeakSet();
-      let winShown = false;
+        const updateBestUI = (best) => {
+          const bestEl = document.getElementById('stat-best');
+          if (!best || !best.time) {
+            bestEl.textContent = '—';
+            return;
+          }
+          bestEl.textContent = `${formatTime(best.time)} / ${best.moves} hamle`;
+        };
 
-      const formatTime = (seconds) => {
-        const m = String(Math.floor(seconds / 60)).padStart(2, '0');
-        const s = String(Math.floor(seconds % 60)).padStart(2, '0');
-        return `${m}:${s}`;
-      };
+        const showOverlay = (overlay) => overlay.classList.add('visible');
+        const hideOverlay = (overlay) => overlay.classList.remove('visible');
 
-      const startTimer = () => {
-        if (timerInterval) return;
-        startTime = Date.now();
-        timerInterval = setInterval(() => {
-          const secs = (Date.now() - startTime) / 1000;
-          statTime.textContent = formatTime(secs);
-        }, 500);
-      };
+        const startOverlay = document.getElementById('start-overlay');
+        const instructionsOverlay = document.getElementById('instructions-overlay');
 
-      const stopTimer = () => {
-        clearInterval(timerInterval);
-        timerInterval = null;
-      };
+        const statsEl = document.createElement('div');
+        statsEl.className = 'stats-card';
+        statsEl.innerHTML = `
+          <div class="stats-card__title">İstatistik</div>
+          <div class="stats-card__row"><span class="stats-card__label">Hamle</span><span class="stats-card__value" id="stat-moves">0</span></div>
+          <div class="stats-card__row"><span class="stats-card__label">Çift</span><span class="stats-card__value" id="stat-pairs">0</span></div>
+          <div class="stats-card__row"><span class="stats-card__label">Süre</span><span class="stats-card__value" id="stat-time">00:00</span></div>
+          <div class="stats-card__row"><span class="stats-card__label">En İyi</span><span class="stats-card__value" id="stat-best">—</span></div>
+          <div class="stats-card__footer">
+            <button id="reset-best" class="btn" type="button">Sıfırla</button>
+            <button id="instructions-btn" class="btn" type="button">📘 Nasıl oynanır</button>
+          </div>
+        `;
+        document.body.appendChild(statsEl);
 
-      const resetStats = () => {
-        moves = 0;
-        matched = 0;
-        startTime = null;
-        stopTimer();
-        statMoves.textContent = '0';
-        statPairs.textContent = '0';
-        statTime.textContent = '00:00';
-        matchedSet.clear?.();
-      };
+        const statMoves = document.getElementById('stat-moves');
+        const statPairs = document.getElementById('stat-pairs');
+        const statTime = document.getElementById('stat-time');
 
-      const observeGame = () => {
-        const board = document.querySelector('.game-board');
-        if (!board) return;
+        const flipAudio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-quick-jump-arcade-game-239.wav');
+        const winAudio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-game-level-completed-2059.wav');
 
-        const observer = new MutationObserver((mutations) => {
-          for (const m of mutations) {
-            const target = m.target;
-            if (!(target instanceof HTMLElement)) continue;
+        let moves = 0;
+        let matched = 0;
+        let timerInterval = null;
+        let startTime = null;
+        const matchedSet = new WeakSet();
+        let winShown = false;
+        let enhancementsReady = false;
 
-            if (m.attributeName === 'class') {
-              const cls = target.classList;
+        const startTimer = () => {
+          if (timerInterval) return;
+          startTime = Date.now();
+          timerInterval = setInterval(() => {
+            const secs = (Date.now() - startTime) / 1000;
+            statTime.textContent = formatTime(secs);
+          }, 500);
+        };
 
-              if (cls.contains('flipped')) {
-                startTimer();
-                if (!m.oldValue || !m.oldValue.includes('flipped')) {
-                  moves++;
-                  statMoves.textContent = moves;
+        const stopTimer = () => {
+          clearInterval(timerInterval);
+          timerInterval = null;
+        };
 
-                  // Play flip sound on card open
-                  flipAudio.currentTime = 0;
-                  flipAudio.play().catch(() => {});
+        const resetStats = () => {
+          moves = 0;
+          matched = 0;
+          startTime = null;
+          stopTimer();
+          statMoves.textContent = '0';
+          statPairs.textContent = '0';
+          statTime.textContent = '00:00';
+          matchedSet.clear?.();
+          winShown = false;
+          updateBestUI(getStoredBest());
+        };
+
+        const setBestScoreIfBetter = (time, moves) => {
+          const best = getStoredBest();
+          const shouldUpdate =
+            !best.time ||
+            time < best.time ||
+            (time === best.time && moves < best.moves);
+          if (shouldUpdate) {
+            const next = { time, moves };
+            setStoredBest(next);
+            updateBestUI(next);
+            return true;
+          }
+          return false;
+        };
+
+        const showWinOverlay = (newBest) => {
+          const winOverlay = document.getElementById('love-overlay');
+          const winText = winOverlay.querySelector('.overlay__subtitle');
+          const button = winOverlay.querySelector('.btn');
+          winText.textContent = newBest
+            ? 'Yeni en iyi skor! Harika iş, aşk şampiyonu! 💖'
+            : 'Tebrikler! Oyun bitti.';
+          button.textContent = 'Yeniden oyna';
+          showOverlay(winOverlay);
+        };
+
+        const initGameEnhancements = () => {
+          if (enhancementsReady) return;
+
+          const board = document.querySelector('.game-board');
+          if (!board) {
+            requestAnimationFrame(initGameEnhancements);
+            return;
+          }
+
+          enhancementsReady = true;
+          resetStats();
+
+          const observer = new MutationObserver((mutations) => {
+            for (const m of mutations) {
+              const target = m.target;
+              if (!(target instanceof HTMLElement)) continue;
+
+              if (m.attributeName === 'class') {
+                const cls = target.classList;
+
+                if (cls.contains('flipped')) {
+                  startTimer();
+                  if (!m.oldValue || !m.oldValue.includes('flipped')) {
+                    moves++;
+                    statMoves.textContent = moves;
+
+                    flipAudio.currentTime = 0;
+                    flipAudio.play().catch(() => {});
+                  }
                 }
-              }
 
-              if (cls.contains('matched') && !matchedSet.has(target)) {
-                matchedSet.add(target);
-                matched++;
-                statPairs.textContent = Math.floor(matched / 2);
+                if (cls.contains('matched') && !matchedSet.has(target)) {
+                  matchedSet.add(target);
+                  matched++;
+                  statPairs.textContent = Math.floor(matched / 2);
 
-                if (!winShown && Math.floor(matched / 2) >= 18) {
-                  winShown = true;
-                  winAudio.play().catch(() => {});
-                  showLoveMessage();
+                  if (!winShown && Math.floor(matched / 2) >= 18) {
+                    winShown = true;
+                    stopTimer();
+
+                    const playedTime = (Date.now() - startTime) / 1000;
+                    const isNewBest = setBestScoreIfBetter(playedTime, moves);
+                    winAudio.currentTime = 0;
+                    winAudio.play().catch(() => {});
+                    showWinOverlay(isNewBest);
+                  }
                 }
               }
             }
+          });
+
+          observer.observe(board, {
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['class'],
+            attributeOldValue: true,
+          });
+        };
+
+        const startGame = () => {
+          hideOverlay(startOverlay);
+          resetStats();
+          initGameEnhancements();
+
+          const audioEl = document.getElementById('bg-music');
+          audioEl.muted = false;
+          audioEl.play().catch(() => {});
+        };
+
+        document.getElementById('music-toggle').addEventListener('click', () => {
+          const audioEl = document.getElementById('bg-music');
+          const btn = document.getElementById('music-toggle');
+          if (audioEl.paused) {
+            audioEl.play().catch(() => {});
+            btn.textContent = '🔊 Pause';
+          } else {
+            audioEl.pause();
+            btn.textContent = '🔈 Play';
           }
         });
 
-        observer.observe(board, { subtree: true, attributes: true, attributeFilter: ['class'], attributeOldValue: true });
-      };
+        document.getElementById('restart-btn').addEventListener('click', () => {
+          location.reload();
+        });
 
-      const initGameEnhancements = () => {
-        const board = document.querySelector('.game-board');
-        if (!board) {
-          requestAnimationFrame(initGameEnhancements);
-          return;
-        }
-        resetStats();
-        observeGame();
-      };
-      initGameEnhancements();
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+          setTheme(themeIndex + 1);
+        });
 
-      // Love message overlay (shown on win)
-      const loveOverlay = document.createElement('div');
-      loveOverlay.id = 'love-overlay';
-      loveOverlay.style = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;z-index:100000;';
-      loveOverlay.innerHTML = `
-        <div style="max-width:520px;width:100%;background:rgba(255,255,255,0.08);border-radius:22px;padding:28px;color:#fff;font-family:system-ui,sans-serif;box-shadow:0 18px 50px rgba(0,0,0,0.7);text-align:center;">
-          <h1 style="margin:0 0 12px;font-size:26px;letter-spacing:0.5px;">🎉 Tebrikler!</h1>
-          <p style="font-size:18px;line-height:1.5;margin:0 0 16px;">Seni çok seviyorum ömrümmmmmmmm 💖</p>
-          <button id="close-love" style="padding:12px 18px;border:none;border-radius:16px;background:rgba(255,255,255,0.18);color:#fff;cursor:pointer;font-size:15px;">Tamam</button>
-        </div>
-      `;
-      document.body.appendChild(loveOverlay);
-      document.getElementById('close-love').addEventListener('click', () => { loveOverlay.style.display = 'none'; });
+        document.getElementById('start-btn').addEventListener('click', () => {
+          startGame();
+        });
 
-      const showLoveMessage = () => {
-        loveOverlay.style.display = 'flex';
-      };
+        document.getElementById('open-instructions').addEventListener('click', () => {
+          showOverlay(instructionsOverlay);
+        });
+
+        document.getElementById('close-instructions').addEventListener('click', () => {
+          hideOverlay(instructionsOverlay);
+        });
+
+        document.getElementById('instructions-btn').addEventListener('click', () => {
+          showOverlay(instructionsOverlay);
+        });
+
+        document.getElementById('reset-best').addEventListener('click', () => {
+          localStorage.removeItem(STORAGE_KEY);
+          updateBestUI({});
+        });
+
+        const loveOverlay = document.createElement('div');
+        loveOverlay.id = 'love-overlay';
+        loveOverlay.className = 'overlay';
+        loveOverlay.innerHTML = `
+          <div class="overlay__panel">
+            <h1 class="overlay__title">🎉 Tebrikler!</h1>
+            <p class="overlay__subtitle">Seni çok seviyorum ömrümmmmmmmm 💖</p>
+            <div class="overlay__actions">
+              <button class="btn" id="win-continue">Tamam</button>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(loveOverlay);
+
+        document.getElementById('win-continue').addEventListener('click', () => {
+          hideOverlay(loveOverlay);
+          showOverlay(startOverlay);
+        });
+
+        loadTheme();
+        showOverlay(startOverlay);
+      })();
     </script>
-</body>
+  </body>
 </html>
